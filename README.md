@@ -1,4 +1,4 @@
-# tinydi
+# TinyDI
 
 > Really really really tiny Dependency Injection lib
 

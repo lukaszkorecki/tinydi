@@ -5,7 +5,7 @@ require 'tinydi/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'tinydi'
-  spec.version       = Tinydi::VERSION
+  spec.version       = TinyDI::VERSION
   spec.authors       = ['Łukasz Korecki']
   spec.email         = ['lukasz@korecki.me']
 
