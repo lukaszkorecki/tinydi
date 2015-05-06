@@ -55,6 +55,7 @@ notifier.twitter_client('@lukaszkorecki').tweet! 'Bananas!'
 
 
 ```ruby
+
 class FakeTwitterClient < TwitterClient
   def tweet!(status)
     status
