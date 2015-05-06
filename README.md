@@ -40,9 +40,7 @@ end
 # for the instance of our class
 
 class Notifier
-  include TinyDI[
-            TwitterClient => :twitter_client
-          ]
+  include TinyDI.inject TwitterClient => :twitter_client
 
 end
 
@@ -51,10 +49,8 @@ end
 notifier = Notifier.new
 notifier.twitter_client('@lukaszkorecki').tweet! 'Bananas!'
 
-# Now in our test we can do sometging like this
+# Now in our test we can do something like this
 
-
-```ruby
 
 class FakeTwitterClient < TwitterClient
   def tweet!(status)
@@ -69,11 +65,11 @@ test 'notifies via twitter' do
 end
 ```
 
-### Why this is useful?
+### Is this is even useful?
 
-Testing is one use case for example - you can mock out your class' depeendencies
+Testing is one use case for example - you can mock out your class' dependencies
 and test just the logic not worrying about what these dependencies are up to
-just as long they have consisten interface.
+just as long they have consistent interface.
 
 You can also dynamically inject dependencies for your instance depending on
 conditions, for example setting different type of a database adapter
@@ -81,7 +77,7 @@ depending on the settings.
 
 ### This is not real DI!
 
-Yup. Maybe. It's ok for me.
+Yup. Maybe. It's :ok: for me.
 
 ### Is it slow?
 
