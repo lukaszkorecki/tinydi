@@ -1,5 +1,5 @@
 language: ruby
-script: ruby -I ./test ./test/**/test_*.rb
+script: bundle exec ruby -I ./test ./test/test_*.rb
 rvm:
   - 2.2
   - 2.1
