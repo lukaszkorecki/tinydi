@@ -5,44 +5,36 @@ class TestTinyDI < Minitest::Test
     refute_nil ::TinyDI::VERSION
   end
 
-  SimpleBlankClass = Struct.new(:test)
-  SimpleReplacement = Struct.new(:test)
+  TwitterClient = Struct.new(:test)
+  FakeTwitterClient = Struct.new(:test)
 
   WithCtorArgs = Struct.new(:store)
   ReplacementWithCtorArgs = Struct.new(:store)
 
   class TestSubject
-    include TinyDI.expose(
-      SimpleBlankClass => :simple_blank,
+    include TinyDI.inject(
+      TwitterClient => :twitter_client,
       WithCtorArgs => :with_ctor
     )
   end
 
-  def test_it_adds_simple_blank_method
-    assert TestSubject.new.respond_to?(:simple_blank)
-    assert TestSubject.new.respond_to?(:simple_blank=)
+  def test_it_adds_twitter_client_method
+    assert TestSubject.new.respond_to?(:build_twitter_client)
+    assert TestSubject.new.respond_to?(:twitter_client_class=)
   end
 
-  def test_it_throws_excpetion_if_method_is_defined
-    skip
-    assert_raises TinyDI::MethodExistsError do
-      # wuh"?
-    end
-  end
-
-  def test_it_exposes_injecting_via_simple_blank_method
-    assert_equal SimpleBlankClass, TestSubject.new.simple_blank.class
+  def test_it_injects_injecting_via_twitter_client_method
+    assert_instance_of TwitterClient, TestSubject.new.build_twitter_client
   end
 
   def test_passess_arguments_to_the_contructor
-    assert_equal :foo, TestSubject.new.with_ctor(:foo).store
+    assert_equal :foo, TestSubject.new.build_with_ctor(:foo).store
   end
 
   def test_allows_overriding_default_klass_via_extend
     inst = TestSubject.new
 
-    inst.simple_blank = SimpleReplacement
-
-    assert_equal SimpleReplacement, inst.simple_blank.class
+    inst.twitter_client_class = FakeTwitterClient
+    assert_instance_of FakeTwitterClient, inst.build_twitter_client
   end
 end
