@@ -12,10 +12,9 @@ class TestTinyDI < Minitest::Test
   ReplacementWithCtorArgs = Struct.new(:store)
 
   class TestSubject
-    include TinyDI[
-      TwitterClient => :twitter_client,
-      WithCtorArgs => :with_ctor
-    ]
+    include TinyDI.inject(TwitterClient => :twitter_client,
+                          WithCtorArgs => :with_ctor
+    )
   end
 
   def test_it_adds_twitter_client_method
@@ -36,5 +35,9 @@ class TestTinyDI < Minitest::Test
 
     inst.twitter_client_class = FakeTwitterClient
     assert_instance_of FakeTwitterClient, inst.twitter_client
+  end
+
+  def test_validates_injected_objects
+    assert_raises
   end
 end
