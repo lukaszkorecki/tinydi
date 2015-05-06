@@ -82,6 +82,24 @@ depending on the settings.
 
 Yup. Maybe. It's ok for me.
 
+### Is it slow?
+
+Only a bit slower, (see `benchmark.rb`)
+
+```
+Calculating -------------------------------------
+              tinydi    10.000  i/100ms
+               class    12.000  i/100ms
+-------------------------------------------------
+              tinydi    103.866  (± 6.7%) i/s -    520.000
+               class    136.831  (± 7.3%) i/s -    684.000
+
+Comparison:
+               class:      136.8 i/s
+              tinydi:      103.9 i/s - 1.32x slower
+
+```
+
 ## Development
 
 To install this gem onto your local machine, run `bundle exec rake

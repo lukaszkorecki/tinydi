@@ -38,6 +38,7 @@ class TestTinyDI < Minitest::Test
   end
 
   def test_validates_injected_objects
+    skip
     assert_raises
   end
 end

@@ -15,7 +15,6 @@ module TinyDI
     remove_instance_variable(:@mapping)
 
     # each instance of the class will have this ivar
-    registry_name = '@__exposeed_klass_registry'
 
     base.instance_eval do
       # For each class <-> name mapping define
@@ -26,22 +25,20 @@ module TinyDI
       # - foo(*args) which calls Foo.new(*args)
       # - foo=(klass) which overrides Foo
       mapping.each do |klass, name|
-        define_method name do |*args|
-          reg = instance_variable_get(registry_name)
-          reg = instance_variable_set(registry_name, {}) unless reg.is_a?(Hash)
-          reg[name] ||= klass
+        sanitized_klass = klass.to_s.gsub(/\W/, '_')
 
-          instance_variable_get(registry_name).fetch(name).new(*args)
+        cache_name = "@__exposed_klass_cache_#{sanitized_klass}_#{name}"
+
+        base.class_eval(<<-EOF, __FILE__, __LINE__ + 1
+        def #{name}(*args)
+          (#{cache_name} || #{klass}).new(*args)
         end
 
-        define_method "#{name}_class=" do |new_klass|
-          reg = instance_variable_get(registry_name)
-          reg ||= {}
-          reg[name] = new_klass
-
-          instance_variable_set(registry_name, reg)
-          new_klass
+        def #{name}_class=(new_class)
+          #{cache_name} = new_class
         end
+        EOF
+        )
       end
     end
   end
