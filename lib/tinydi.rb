@@ -1,6 +1,10 @@
 require 'tinydi/version'
 
 module TinyDI
+  module ClassRegistry
+    attr_accessor :__injected_klass_registry
+  end
+
   class MethodExistsError < StandardError; end
   def self.expose(mapping = {})
     @mapping = mapping
@@ -8,23 +12,26 @@ module TinyDI
   end
 
   def self.included(base)
-    @mapping.each do |klass, name|
-      if base.instance_methods(false).include? name.intern
-        fail MethodExistsError,
-             "Method: #{name} is already defined on instance of #{base}"
-      else
-        setter_name = "#{name}="
-        klass_cache_var = "@___klass_#{name}"
+    base.extend(ClassRegistry)
+    mapping = @mapping
 
-        base.send :define_method, setter_name do |new_klass|
-          instance_variable_set klass_cache_var, new_klass
+    base.instance_eval do
+      base.__injected_klass_registry = {}
+
+      mapping.each do |klass, name|
+        # XXX: make thread safe!
+        base.__injected_klass_registry[name] = klass
+
+        define_method name do |*args|
+          base.__injected_klass_registry.fetch(name).new(*args)
         end
 
-        base.send :define_method, name do |*args|
-          instance_variable_get klass_cache_var || klass.new(*args)
+        define_method "#{name}=" do |new_klass|
+          base.__injected_klass_registry[name] = new_klass
         end
-
       end
     end
+
+    @mapping = nil
   end
 end

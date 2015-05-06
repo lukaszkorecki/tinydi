@@ -5,48 +5,44 @@ class TestTinyDI < Minitest::Test
     refute_nil ::TinyDI::VERSION
   end
 
-  class InjectIng; end
+  SimpleBlankClass = Struct.new(:test)
+  SimpleReplacement = Struct.new(:test)
 
-  class WithStoreMeth
-    def store
-      :fail
-    end
-  end
-
-  WithCTorArgs = Struct.new(:store)
-  SomeOther = Struct.new(:store)
+  WithCtorArgs = Struct.new(:store)
+  ReplacementWithCtorArgs = Struct.new(:store)
 
   class TestSubject
     include TinyDI.expose(
-      InjectIng => :injected,
-      WithCTorArgs => :ctor
+      SimpleBlankClass => :simple_blank,
+      WithCtorArgs => :with_ctor
     )
   end
 
-  def test_it_adds_injected_method
-    assert TestSubject.new.respond_to?(:injected)
+  def test_it_adds_simple_blank_method
+    assert TestSubject.new.respond_to?(:simple_blank)
+    assert TestSubject.new.respond_to?(:simple_blank=)
   end
 
   def test_it_throws_excpetion_if_method_is_defined
+    skip
     assert_raises TinyDI::MethodExistsError do
-      WithStoreMeth.new.extend TinyDI.expose(InjectIng => :store)
+      # wuh"?
     end
   end
 
-  def test_it_exposes_injecting_via_injected_method
-    assert_equal InjectIng, TestSubject.new.injected.class
+  def test_it_exposes_injecting_via_simple_blank_method
+    assert_equal SimpleBlankClass, TestSubject.new.simple_blank.class
   end
 
   def test_passess_arguments_to_the_contructor
-    assert_equal :foo, TestSubject.new.ctor(:foo).store
+    assert_equal :foo, TestSubject.new.with_ctor(:foo).store
   end
 
   def test_allows_overriding_default_klass_via_extend
     inst = TestSubject.new
 
-    require 'pry'; binding.pry
-    inst.injected = SomeOther
+    inst.simple_blank = SimpleReplacement
 
-    assert_equal SomeOther, inst.injected.new.class
+    assert_equal SimpleReplacement, inst.simple_blank.class
   end
 end
