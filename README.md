@@ -88,16 +88,24 @@ Yup. Maybe. It's ok for me.
 Only a bit slower, (see `benchmark.rb`)
 
 ```
+
 Calculating -------------------------------------
               tinydi    10.000  i/100ms
-               class    12.000  i/100ms
+               class    13.000  i/100ms
+tinydi - no override    10.000  i/100ms
+ class - no override    12.000  i/100ms
 -------------------------------------------------
-              tinydi    103.866  (± 6.7%) i/s -    520.000
-               class    136.831  (± 7.3%) i/s -    684.000
+              tinydi    105.247  (± 6.7%) i/s -    530.000
+               class    133.301  (± 6.8%) i/s -    676.000
+tinydi - no override    191.407  (± 8.9%) i/s -    950.000
+ class - no override    239.902  (± 9.6%) i/s -      1.200k
 
 Comparison:
-               class:      136.8 i/s
-              tinydi:      103.9 i/s - 1.32x slower
+ class - no override:      239.9 i/s
+tinydi - no override:      191.4 i/s - 1.25x slower
+               class:      133.3 i/s - 1.80x slower
+              tinydi:      105.2 i/s - 2.28x slower
+
 
 ```
 

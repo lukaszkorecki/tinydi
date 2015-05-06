@@ -42,5 +42,19 @@ Benchmark.ips do |x|
     end
   end
 
+  x.report('tinydi - no override') do
+    10_000.times do
+      inst = WithDi.new
+      inst.util.foo
+    end
+  end
+
+  x.report('class - no override') do
+    10_000.times do
+      inst = PlainOld.new
+      inst.util.foo
+    end
+  end
+
   x.compare!
 end
